@@ -36,18 +36,20 @@ class SequenceCorpus(Corpus):
 
                     if new_sentence is not None:
                         new_sentence.addWord(new_word)
+            input_file.close()
 
         except IOError:
             pass
 
-    def get_class_labels(self):
+    def get_class_labels(self)->[str]:
         class_labels = []
         sentence_labelled = isinstance(self.sentences[0], LabelledSentence) if self.sentences else False
 
         for sentence in self.sentences:
             if sentence_labelled:
-                if sentence.get_class_label() not in class_labels:
-                    class_labels.append(sentence.get_class_label())
+                if isinstance(sentence, LabelledSentence):
+                    if sentence.class_label not in class_labels:
+                        class_labels.append(sentence.class_label)
             else:
                 for word in sentence.words:
                     if isinstance(word, LabelledVectorizedWord):

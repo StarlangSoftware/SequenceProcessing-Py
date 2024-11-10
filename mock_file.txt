@@ -1,0 +1,7 @@
+<S>
+word1 noun
+word2 verb
+</S>
+<S>
+word3 adj
+</S>
