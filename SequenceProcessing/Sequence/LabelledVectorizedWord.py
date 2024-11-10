@@ -1,8 +1,9 @@
 from Dictionary.VectorizedWord import VectorizedWord
 from Math.Vector import Vector
 
+
 class LabelledVectorizedWord(VectorizedWord):
-    
+
     def __init__(self, word, class_label, embedding=None):
         if embedding is None:
             # If no embedding is provided, create a Vector of size 300 initialized to 0
