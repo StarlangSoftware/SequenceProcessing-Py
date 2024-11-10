@@ -14,5 +14,5 @@ class LabelledVectorizedWord(VectorizedWord):
         self.__class_label = class_label
 
     @property
-    def class_label(self):
+    def getClassLabel(self) -> str:
         return self.__class_label

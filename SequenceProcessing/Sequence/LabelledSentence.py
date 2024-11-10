@@ -10,5 +10,5 @@ class LabelledSentence(Sentence):
         self.__class_label = class_label
 
     @property
-    def class_label(self)->str:
+    def getClassLabel(self) -> str:
         return self.__class_label

@@ -41,19 +41,19 @@ class SequenceCorpus(Corpus):
         except IOError:
             pass
 
-    def get_class_labels(self)->[str]:
+    def getClassLabels(self) -> [str]:
         class_labels = []
         sentence_labelled = isinstance(self.sentences[0], LabelledSentence) if self.sentences else False
 
         for sentence in self.sentences:
             if sentence_labelled:
                 if isinstance(sentence, LabelledSentence):
-                    if sentence.class_label not in class_labels:
-                        class_labels.append(sentence.class_label)
+                    if sentence.getClassLabel not in class_labels:
+                        class_labels.append(sentence.getClassLabel)
             else:
                 for word in sentence.words:
                     if isinstance(word, LabelledVectorizedWord):
-                        if word.class_label not in class_labels:
-                            class_labels.append(word.class_label)
+                        if word.getClassLabel not in class_labels:
+                            class_labels.append(word.getClassLabel)
 
         return class_labels

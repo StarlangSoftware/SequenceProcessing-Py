@@ -9,13 +9,13 @@ class TestLabelledVectorizedWord(unittest.TestCase):
         embedding = Vector(300, 1.0)
         word = LabelledVectorizedWord("example", "noun", embedding)
         self.assertEqual(word.name, "example")
-        self.assertEqual(word.class_label, "noun")
+        self.assertEqual(word.getClassLabel, "noun")
         self.assertEqual(word.getVector(), embedding)
 
     def test_initialization_without_embedding(self):
         word = LabelledVectorizedWord("example", "noun")
         self.assertEqual(word.name, "example")
-        self.assertEqual(word.class_label, "noun")
+        self.assertEqual(word.getClassLabel, "noun")
         self.assertEqual(word.getVector().size(), 300)
 
 
