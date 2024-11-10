@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5ccdc949-983f-430d-b7d3-7f05abc43076" name="Changes" comment="Initial commit" />
+    <list default="true" id="5ccdc949-983f-430d-b7d3-7f05abc43076" name="Changes" comment="Added two test cases." />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -20,21 +20,21 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "olcaytaner"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;olcaytaner&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/StarlangSoftware/SequenceProcessing-Py",
-    "accountId": "5a9c3d15-32c5-48c8-bdfc-d84ce0e7a6ff"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/StarlangSoftware/SequenceProcessing-Py&quot;,
+    &quot;accountId&quot;: &quot;5a9c3d15-32c5-48c8-bdfc-d84ce0e7a6ff&quot;
   }
-}]]></component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 6
-}]]></component>
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 6
+}</component>
   <component name="ProjectId" id="2oCW2NidAwKUZg1ls8cGO1tDVVl" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
@@ -43,6 +43,16 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Python tests.Python tests for TestLabelledSentence.TestLabelledSentence.test_class_label.executor": "Run",
+    "Python tests.Python tests for TestLabelledVectorizedWord.TestLabelledVectorizedWord.test_initialization_with_embedding.executor": "Run",
+    "Python tests.Python tests for TestSequenceCorpus.TestSequenceCorpus.executor": "Run",
+    "Python tests.Python tests for TestSequenceCorpus.TestSequenceCorpus.test_class_labels.executor": "Run",
+    "Python tests.Python tests for TestSequenceCorpus.TestSequenceCorpus.test_corpus01.executor": "Run",
+    "Python tests.Python tests for TestSequenceCorpus.TestSequenceCorpus.test_corpus26.executor": "Run",
+    "Python tests.Python tests for TestSequenceCorpus.TestSequenceCorpus.test_sentence_count.executor": "Run",
+    "Python tests.Python tests in TestLabelledSentence.py.executor": "Run",
+    "Python tests.Python tests in TestLabelledVectorizedWord.py.executor": "Run",
+    "Python tests.Python tests in TestSequenceCorpus.py.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "main",
     "last_opened_file_path": "/Users/olcay/Dropbox/nlptoolkit-repositories-py/SequenceProcessing",
@@ -58,12 +68,107 @@
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
     </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/datasets" />
+      <recent name="$PROJECT_DIR$/test" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python tests.Python tests for TestSequenceCorpus.TestSequenceCorpus.test_corpus26">
+    <configuration name="Python tests for TestSequenceCorpus.TestSequenceCorpus" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="SequenceProcessing" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/test" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;TestSequenceCorpus.TestSequenceCorpus&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Python tests for TestSequenceCorpus.TestSequenceCorpus.test_class_labels" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="SequenceProcessing" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/test" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;TestSequenceCorpus.TestSequenceCorpus.test_class_labels&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Python tests for TestSequenceCorpus.TestSequenceCorpus.test_corpus01" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="SequenceProcessing" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/test" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;TestSequenceCorpus.TestSequenceCorpus.test_corpus01&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Python tests for TestSequenceCorpus.TestSequenceCorpus.test_corpus26" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="SequenceProcessing" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/test" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;TestSequenceCorpus.TestSequenceCorpus.test_corpus26&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Python tests in TestSequenceCorpus.py" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="SequenceProcessing" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/test" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/test/TestSequenceCorpus.py&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python tests.Python tests for TestSequenceCorpus.TestSequenceCorpus.test_corpus26" />
+        <item itemvalue="Python tests.Python tests for TestSequenceCorpus.TestSequenceCorpus.test_corpus01" />
+        <item itemvalue="Python tests.Python tests in TestSequenceCorpus.py" />
+        <item itemvalue="Python tests.Python tests for TestSequenceCorpus.TestSequenceCorpus.test_class_labels" />
+        <item itemvalue="Python tests.Python tests for TestSequenceCorpus.TestSequenceCorpus" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-PY-241.18034.82" />
-        <option value="bundled-python-sdk-975db3bf15a3-2767605e8bc2-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-241.18034.82" />
+        <option value="bundled-js-predefined-1d06a55b98c1-91d5c284f522-JavaScript-PY-241.15989.155" />
+        <option value="bundled-python-sdk-babbdf50b680-7c6932dee5e4-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-241.15989.155" />
       </set>
     </attachedChunks>
   </component>
@@ -76,6 +181,7 @@
       <option name="presentableId" value="Default" />
       <updated>1730373829902</updated>
       <workItem from="1730373840021" duration="417000" />
+      <workItem from="1731235752686" duration="2936000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit">
       <option name="closed" value="true" />
@@ -85,7 +191,31 @@
       <option name="project" value="LOCAL" />
       <updated>1730374243080</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Updated tests and some code.">
+      <option name="closed" value="true" />
+      <created>1731236720378</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1731236720378</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Added datasets.">
+      <option name="closed" value="true" />
+      <created>1731238202863</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1731238202863</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Added two test cases.">
+      <option name="closed" value="true" />
+      <created>1731238604012</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1731238604012</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -93,6 +223,12 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Initial commit" />
-    <option name="LAST_COMMIT_MESSAGE" value="Initial commit" />
+    <MESSAGE value="Updated tests and some code." />
+    <MESSAGE value="Added datasets." />
+    <MESSAGE value="Added two test cases." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added two test cases." />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/SequenceProcessing$.coverage" NAME=" Coverage Results" MODIFIED="1731238546136" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
   </component>
 </project>

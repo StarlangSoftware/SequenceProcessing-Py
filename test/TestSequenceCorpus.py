@@ -10,7 +10,7 @@ class TestSequenceCorpus(unittest.TestCase):
 
     def test_class_labels(self):
         self.corpus = SequenceCorpus("../mock_file.txt")
-        class_labels = self.corpus.get_class_labels()
+        class_labels = self.corpus.getClassLabels()
         self.assertIn("noun", class_labels)
         self.assertIn("verb", class_labels)
         self.assertIn("adj", class_labels)
