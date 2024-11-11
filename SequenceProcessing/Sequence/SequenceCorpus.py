@@ -8,7 +8,7 @@ from SequenceProcessing.Sequence.LabelledVectorizedWord import LabelledVectorize
 
 class SequenceCorpus(Corpus):
 
-    def __init__(self, file_name):
+    def __init__(self, file_name: str):
         super().__init__()
         new_sentence = None
 

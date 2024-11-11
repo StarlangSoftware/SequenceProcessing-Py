@@ -6,7 +6,7 @@ class LabelledVectorizedWord(VectorizedWord):
 
     __class_label: str
 
-    def __init__(self, word, class_label, embedding=None):
+    def __init__(self, word: str, class_label: str, embedding: Vector=None):
         if embedding is None:
             # If no embedding is provided, create a Vector of size 300 initialized to 0
             embedding = Vector(300, 0)
