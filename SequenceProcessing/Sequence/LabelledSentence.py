@@ -5,7 +5,7 @@ class LabelledSentence(Sentence):
 
     __class_label: str
 
-    def __init__(self, class_label):
+    def __init__(self, class_label: str):
         super().__init__()
         self.__class_label = class_label
 
