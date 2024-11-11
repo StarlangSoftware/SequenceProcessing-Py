@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
-import numpy as np
+from Math.Matrix import Matrix 
 
 class Initializer(ABC):
     @abstractmethod
-    def initialize(self, rows, cols, random):
+    def initialize(self, row: int, col: int, random: int) -> Matrix:
         pass
