@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
-from Math.Matrix import Matrix 
+from Math.Matrix import Matrix
+
 
 class Initializer(ABC):
     @abstractmethod
