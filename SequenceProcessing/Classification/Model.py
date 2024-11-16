@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from Math.Matrix import Matrix
 from Classification.Parameter.ActivationFunction import ActivationFunction
 from Classification.Parameter.DeepNetworkParameter import DeepNetworkParameter
+
 from SequenceProcessing.Sequence.LabelledVectorizedWord import LabelledVectorizedWord
 from SequenceProcessing.Sequence.SequenceCorpus import SequenceCorpus
 from SequenceProcessing.Initializer.Initializer import Initializer
@@ -10,15 +11,25 @@ import pickle
 
 
 class Model(ABC):
+
+    corpus: SequenceCorpus
+    layers: [Matrix]
+    oldLayers: [Matrix]
+    weights: [Matrix]
+    recurrentWeights: [Matrix]
+    classLabels: [str]
+    activationFunction: ActivationFunction
+    parameters: DeepNetworkParameter
+
     def __init__(self):
-        self.corpus: SequenceCorpus = None
-        self.layers: list[Matrix] = []
-        self.oldLayers: list[Matrix] = []
-        self.weights: list[Matrix] = []
-        self.recurrentWeights: list[Matrix] = []
-        self.classLabels: list[str] = []
-        self.activationFunction: ActivationFunction = None
-        self.parameters: DeepNetworkParameter = None
+        self.corpus = None
+        self.layers = []
+        self.oldLayers = []
+        self.weights = []
+        self.recurrentWeights = []
+        self.classLabels = []
+        self.activationFunction = None
+        self.parameters = None
 
     def train(self, corpus: SequenceCorpus, parameters: DeepNetworkParameter, initializer: Initializer):
         self.parameters = parameters
@@ -26,7 +37,7 @@ class Model(ABC):
         self.activationFunction = parameters.getActivationFunction()
         self.classLabels = corpus.getClassLabels()
 
-        inputSize = len(corpus.getSentence(0).getWord(0).getVector()) ### Not sure about this line
+        inputSize = corpus.getSentence(0).getWord(0).getVector().size()
         self.layers.append(Matrix(inputSize, 1))
 
         for i in range(parameters.layerSize()):
@@ -35,10 +46,10 @@ class Model(ABC):
             self.recurrentWeights.append(initializer.initialize(
                 parameters.getHiddenNodes(i),
                 parameters.getHiddenNodes(i),
-                parameters.getSeed() ## do we need np.random.seed(parameters.getSeed())?
+                parameters.getSeed()
             ))
 
-        self.layers.append(Matrix(len(self.classLabels), 1)) ## or self.classLabels.size()?
+        self.layers.append(Matrix(len(self.classLabels), 1))
 
         for i in range(len(self.layers) - 1):
             self.weights.append(initializer.initialize(
@@ -54,8 +65,8 @@ class Model(ABC):
             print(f"Epoch: {e + 1}")
             corpus.shuffleSentences(parameters.getSeed())
 
-            for j in range(corpus.sentenceCount()):  # Explicitly loop over indices
-                sentence = corpus.getSentence(j)    # Access each sentence by index
+            for j in range(corpus.sentenceCount()):
+                sentence = corpus.getSentence(j)
                 for k in range(sentence.wordCount()):
                     self.calculateOutput(sentence, k)
                     self.backpropagation(sentence, k, learningRate)
@@ -106,7 +117,7 @@ class Model(ABC):
             self.layers[-1].setValue(i, 0, expValues[i] / total)
 
     def calculateRMinusY(self, word: LabelledVectorizedWord) -> Matrix:
-        r = Matrix(len(self.classLabels), 1) # or self.classLabels.size()? 
+        r = Matrix(len(self.classLabels), 1)  # or self.classLabels.size()?
         index = self.classLabels.index(word.getClassLabel())
         r.setValue(index, 0, 1.0)
 
@@ -120,7 +131,7 @@ class Model(ABC):
             # Calculate SIGMOID derivative
             oneMinusHidden = self.calculateOneMinusMatrix(matrix)
             return matrix.elementProduct(oneMinusHidden)
-        
+
         elif function == ActivationFunction.TANH:
             # Calculate TANH derivative
             oneMinusA2 = Matrix(matrix.getRow(), 1)  # Initialize a new matrix
@@ -165,8 +176,6 @@ class Model(ABC):
 
         return result
 
-
-
     def clear(self):
         self.oldLayersUpdate()
         self.setLayersValuesToZero()
@@ -184,27 +193,27 @@ class Model(ABC):
     def backpropagation(self, sentence, index, learningRate):
         pass
 
-    def predict(self, sentence) -> list[str]:
+    def predict(self, sentence) -> [str]:
         predictions = []  # To store predicted class labels
 
         for i in range(sentence.wordCount()):  # Loop through each word in the sentence
             self.calculateOutput(sentence, i)  # Calculate the output for the current word
-            
+
             # Find the index of the maximum value in the last layer
             maxIndex = max(
                 range(self.layers[-1].getRow()),  # Iterate over the rows of the last layer
                 key=lambda j: self.layers[-1].getValue(j, 0)  # Use the value at (j, 0) for comparison
             )
-            
+
             # Append the corresponding class label
             predictions.append(self.classLabels[maxIndex])
-            
+
             # Clear the state after processing each word
             self.clear()
 
         # Clear old values after processing the entire sentence
         self.clearOldValues()
-        
+
         return predictions  # Return the list of predicted class labels
 
     def save(self, fileName: str):
