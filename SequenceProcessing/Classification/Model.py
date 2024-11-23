@@ -100,8 +100,8 @@ class Model(ABC):
                 self.layers[j].setValue(i, 0, 0.0)
 
         # For the last layer, set all its values to 0.0
-        for i in range(self.layers[-1].getRow()):
-            self.layers[-1].setValue(i, 0, 0.0)
+        for i in range(self.layers[len(self.layers) - 1].getRow()):
+            self.layers[len(self.layers) - 1].setValue(i, 0, 0.0)
 
     def calculateOneMinusMatrix(self, hidden: Matrix) -> Matrix:
         oneMinus = Matrix(hidden.getRow(), 1)
@@ -109,12 +109,12 @@ class Model(ABC):
             oneMinus.setValue(i, 0, 1 - hidden.getValue(i, 0))
         return oneMinus
 
-    # NOT 100% Sure
+    
     def normalizeOutput(self):
-        expValues = [np.exp(self.layers[-1].getValue(i, 0)) for i in range(self.layers[-1].getRow())]
+        expValues = [np.exp(self.layers[len(self.layers) - 1].getValue(i, 0)) for i in range(self.layers[len(self.layers) - 1].getRow())]
         total = sum(expValues)
-        for i in range(self.layers[-1].getRow()):
-            self.layers[-1].setValue(i, 0, expValues[i] / total)
+        for i in range(self.layers[len(self.layers) - 1].getRow()):
+            self.layers[len(self.layers) - 1].setValue(i, 0, expValues[i] / total)
 
     def calculateRMinusY(self, word: LabelledVectorizedWord) -> Matrix:
         r = Matrix(len(self.classLabels), 1)  # or self.classLabels.size()?
@@ -122,7 +122,7 @@ class Model(ABC):
         r.setValue(index, 0, 1.0)
 
         for i in range(len(self.classLabels)):
-            r.setValue(i, 0, r.getValue(i, 0) - self.layers[-1].getValue(i, 0))
+            r.setValue(i, 0, r.getValue(i, 0) - self.layers[len(self.layers) - 1].getValue(i, 0))
 
         return r
 
@@ -201,8 +201,8 @@ class Model(ABC):
 
             # Find the index of the maximum value in the last layer
             maxIndex = max(
-                range(self.layers[-1].getRow()),  # Iterate over the rows of the last layer
-                key=lambda j: self.layers[-1].getValue(j, 0)  # Use the value at (j, 0) for comparison
+                range(self.layers[len(self.layers) - 1].getRow()),  # Iterate over the rows of the last layer
+                key=lambda j: self.layers[len(self.layers) - 1].getValue(j, 0)  # Use the value at (j, 0) for comparison
             )
 
             # Append the corresponding class label
