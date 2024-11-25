@@ -11,7 +11,6 @@ import pickle
 
 
 class Model(ABC):
-
     corpus: SequenceCorpus
     layers: [Matrix]
     oldLayers: [Matrix]
@@ -109,9 +108,9 @@ class Model(ABC):
             oneMinus.setValue(i, 0, 1 - hidden.getValue(i, 0))
         return oneMinus
 
-    
     def normalizeOutput(self):
-        expValues = [np.exp(self.layers[len(self.layers) - 1].getValue(i, 0)) for i in range(self.layers[len(self.layers) - 1].getRow())]
+        expValues = [np.exp(self.layers[len(self.layers) - 1].getValue(i, 0)) for i in
+                     range(self.layers[len(self.layers) - 1].getRow())]
         total = sum(expValues)
         for i in range(self.layers[len(self.layers) - 1].getRow()):
             self.layers[len(self.layers) - 1].setValue(i, 0, expValues[i] / total)
@@ -153,7 +152,7 @@ class Model(ABC):
         else:
             raise ValueError("Unsupported ActivationFunction type OR MatrixDimensionMismatch")
 
-    def activationFunction(self, matrix: Matrix, function: ActivationFunction) -> Matrix:
+    def calculateActivationFunction(self, matrix: Matrix, function: ActivationFunction) -> Matrix:
         result = Matrix(matrix.getRow(), matrix.getColumn())  # Initialize a new matrix with the same dimensions
 
         if function == ActivationFunction.SIGMOID:

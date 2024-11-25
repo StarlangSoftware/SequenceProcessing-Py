@@ -6,6 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="5ccdc949-983f-430d-b7d3-7f05abc43076" name="Changes" comment="Some minor modifications.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SequenceProcessing/Classification/Model.py" beforeDir="false" afterPath="$PROJECT_DIR$/SequenceProcessing/Classification/Model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SequenceProcessing/Classification/RecurrentNeuralNetworkModel.py" beforeDir="false" afterPath="$PROJECT_DIR$/SequenceProcessing/Classification/RecurrentNeuralNetworkModel.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -170,8 +172,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-1d06a55b98c1-91d5c284f522-JavaScript-PY-241.15989.155" />
-        <option value="bundled-python-sdk-babbdf50b680-7c6932dee5e4-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-241.15989.155" />
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-PY-241.18034.82" />
+        <option value="bundled-python-sdk-975db3bf15a3-2767605e8bc2-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-241.18034.82" />
       </set>
     </attachedChunks>
   </component>
@@ -191,6 +193,13 @@
       <workItem from="1731503036433" duration="29000" />
       <workItem from="1731503069365" duration="18000" />
       <workItem from="1731743205356" duration="23000" />
+      <workItem from="1731743230959" duration="1020000" />
+      <workItem from="1731783108405" duration="27000" />
+      <workItem from="1731783137674" duration="37000" />
+      <workItem from="1732121259467" duration="11000" />
+      <workItem from="1732121273298" duration="30000" />
+      <workItem from="1732209995342" duration="54000" />
+      <workItem from="1732537834179" duration="309000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit">
       <option name="closed" value="true" />
@@ -248,7 +257,15 @@
       <option name="project" value="LOCAL" />
       <updated>1731440884770</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Some minor modifications.">
+      <option name="closed" value="true" />
+      <created>1731744227373</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1731744227373</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

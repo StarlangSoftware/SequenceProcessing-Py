@@ -1,7 +1,5 @@
 from SequenceProcessing.Classification.Model import Model
-from Math.Matrix import Matrix
 from Corpus.Sentence import Sentence
-from SequenceProcessing.Sequence.LabelledVectorizedWord import LabelledVectorizedWord
 
 
 class RecurrentNeuralNetworkModel(Model):
@@ -15,7 +13,7 @@ class RecurrentNeuralNetworkModel(Model):
             # Add weights multiplied by the current layer values
             self.layers[l + 1].add(self.weights[l].multiply(self.layers[l]))
             # Apply activation function and bias
-            self.layers[l + 1] = self.activationFunction(self.layers[l + 1], self.activationFunction)
+            self.layers[l + 1] = self.calculateActivationFunction(self.layers[l + 1], self.activationFunction)
             self.layers[l + 1] = self.biased(self.layers[l + 1])
 
         # Process the final output layer
