@@ -1,9 +1,7 @@
 from Math.Matrix import Matrix
 from Classification.Parameter.ActivationFunction import ActivationFunction
-from SequenceProcessing.Sequence.LabelledVectorizedWord import LabelledVectorizedWord
 from SequenceProcessing.Sequence.SequenceCorpus import SequenceCorpus
 from SequenceProcessing.Initializer.Initializer import Initializer
-import numpy as np
 from Model import Model
 
 
