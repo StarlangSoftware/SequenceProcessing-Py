@@ -76,30 +76,30 @@ class GatedRecurrentUnitModel(Model):
         word = sentence.getWord(index)
         self.createInputVector(word)
         for l in range(len(self.layers) - 2):
-            self.rVectors[l].add(self.rWeights[l].multiply(self.layers[l]))
-            self.zVectors[l].add(self.zWeights[l].multiply(self.layers[l]))
-            self.rVectors[l].add(self.rRecurrentWeights[l].multiply(self.oldLayers[l]))
-            self.zVectors[l].add(self.zRecurrentWeights[l].multiply(self.oldLayers[l]))
+            self.rVectors[l].append(self.rWeights[l].multiply(self.layers[l]))
+            self.zVectors[l].append(self.zWeights[l].multiply(self.layers[l]))
+            self.rVectors[l].append(self.rRecurrentWeights[l].multiply(self.oldLayers[l]))
+            self.zVectors[l].append(self.zRecurrentWeights[l].multiply(self.oldLayers[l]))
 
             self.rVectors[l] = self.activationFunction(self.rVectors[l], self.activationFunction)
             self.zVectors[l] = self.activationFunction(self.zVectors[l], self.activationFunction)
 
-            self.aVectors[l].add(
+            self.aVectors[l].append(
                 self.recurrentWeights[l].multiply(
                     self.rVectors[l].elementProduct(self.oldLayers[l])
                 )
             )
-            self.aVectors[l].add(self.weights[l].multiply(self.layers[l]))
+            self.aVectors[l].append(self.weights[l].multiply(self.layers[l]))
 
             self.aVectors[l] = self.activationFunction(self.aVectors[l], ActivationFunction.TANH)
 
-            self.layers[l + 1].add(
+            self.layers[l + 1].append(
                 self.calculateOneMinusMatrix(self.zVectors[l]).elementProduct(self.oldLayers[l])
             )
-            self.layers[l + 1].add(self.zVectors[l].elementProduct(self.aVectors[l]))
+            self.layers[l + 1].append(self.zVectors[l].elementProduct(self.aVectors[l]))
             self.layers[l + 1] = self.biased(self.layers[l + 1])
 
-        self.layers[-1].add(
+        self.layers[-1].append(
             self.weights[-1].multiply(self.layers[-2])
         )
         self.normalizeOutput()
@@ -191,13 +191,13 @@ def backpropagation(self, sentence, index, learningRate):
             )
             rDeltaRecurrentWeights.append(rDeltaWeights[-1].clone())
 
-    self.weights[-1].add(deltaWeights[0])
+    self.weights[-1].append(deltaWeights[0])
     deltaWeights.pop(0)
 
     for l in range(len(deltaWeights)):
-        self.weights[-l - 2].add(deltaWeights[l])
-        self.rWeights[-l - 1].add(rDeltaWeights[l])
-        self.zWeights[-l - 1].add(zDeltaWeights[l])
-        self.recurrentWeights[-l - 1].add(deltaRecurrentWeights[l])
-        self.zRecurrentWeights[-l - 1].add(zDeltaRecurrentWeights[l])
-        self.rRecurrentWeights[-l - 1].add(rDeltaRecurrentWeights[l])
+        self.weights[-l - 2].append(deltaWeights[l])
+        self.rWeights[-l - 1].append(rDeltaWeights[l])
+        self.zWeights[-l - 1].append(zDeltaWeights[l])
+        self.recurrentWeights[-l - 1].append(deltaRecurrentWeights[l])
+        self.zRecurrentWeights[-l - 1].append(zDeltaRecurrentWeights[l])
+        self.rRecurrentWeights[-l - 1].append(rDeltaRecurrentWeights[l])
