@@ -1,12 +1,12 @@
 import unittest
 from Math.Tensor import Tensor
 from SequenceProcessing.Functions.AdditionByConstant import AdditionByConstant
+from SequenceProcessing.Functions.MultiplyByConstant import MultiplyByConstant
 
 
 class TestAdditionByConstant(unittest.TestCase):
 
     def test_calculate(self):
-        # input tensor
         tensor = Tensor([1.0, 2.0, 3.0], [3])
 
         func = AdditionByConstant(2.0)
@@ -24,8 +24,29 @@ class TestAdditionByConstant(unittest.TestCase):
 
         result = func.derivative(tensor, grad)
 
-        # derivative should return gradient unchanged
         self.assertEqual(result.getData(), [0.5, 0.5, 0.5])
+
+
+class TestMultiplyByConstant(unittest.TestCase):
+
+    def test_calculate(self):
+        t = Tensor([1.0, 2.0, 3.0], (3,))
+        f = MultiplyByConstant(2.0)
+
+        out = f.calculate(t)
+
+        self.assertEqual(out.getData(), [2.0, 4.0, 6.0])
+        self.assertEqual(out.getShape(), (3,))
+
+    def test_derivative(self):
+        t = Tensor([1.0, 2.0, 3.0], (3,))
+        grad = Tensor([1.0, 1.0, 1.0], (3,))
+
+        f = MultiplyByConstant(2.0)
+
+        out = f.derivative(t, grad)
+
+        self.assertEqual(out.getData(), [2.0, 2.0, 2.0])
 
 
 if __name__ == "__main__":

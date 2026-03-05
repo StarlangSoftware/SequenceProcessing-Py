@@ -1,5 +1,3 @@
-# SequenceProcessing/Functions/AdditionByConstant.py
-
 from ComputationalGraph.Function import Function
 from Math.Tensor import Tensor
 
