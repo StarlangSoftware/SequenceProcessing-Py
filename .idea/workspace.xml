@@ -38,35 +38,36 @@
   &quot;associatedIndex&quot;: 6
 }</component>
   <component name="ProjectId" id="2oCW2NidAwKUZg1ls8cGO1tDVVl" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Python tests.Python tests for TestLabelledSentence.TestLabelledSentence.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests for TestLabelledSentence.TestLabelledSentence.test_class_label.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests for TestLabelledVectorizedWord.TestLabelledVectorizedWord.test_initialization_with_embedding.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests for TestSequenceCorpus.TestSequenceCorpus.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests for TestSequenceCorpus.TestSequenceCorpus.test_class_labels.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests for TestSequenceCorpus.TestSequenceCorpus.test_corpus01.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests for TestSequenceCorpus.TestSequenceCorpus.test_corpus26.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests for TestSequenceCorpus.TestSequenceCorpus.test_sentence_count.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests in TestLabelledSentence.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests in TestLabelledVectorizedWord.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests in TestSequenceCorpus.py.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/olcay/Dropbox/nlptoolkit-repositories-py/SequenceProcessing&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python tests.Python tests for TestLabelledSentence.TestLabelledSentence.executor": "Run",
+    "Python tests.Python tests for TestLabelledSentence.TestLabelledSentence.test_class_label.executor": "Run",
+    "Python tests.Python tests for TestLabelledVectorizedWord.TestLabelledVectorizedWord.test_initialization_with_embedding.executor": "Run",
+    "Python tests.Python tests for TestSequenceCorpus.TestSequenceCorpus.executor": "Run",
+    "Python tests.Python tests for TestSequenceCorpus.TestSequenceCorpus.test_class_labels.executor": "Run",
+    "Python tests.Python tests for TestSequenceCorpus.TestSequenceCorpus.test_corpus01.executor": "Run",
+    "Python tests.Python tests for TestSequenceCorpus.TestSequenceCorpus.test_corpus26.executor": "Run",
+    "Python tests.Python tests for TestSequenceCorpus.TestSequenceCorpus.test_sentence_count.executor": "Run",
+    "Python tests.Python tests in TestLabelledSentence.py.executor": "Run",
+    "Python tests.Python tests in TestLabelledVectorizedWord.py.executor": "Run",
+    "Python tests.Python tests in TestSequenceCorpus.py.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/md047617/Documents/GitHub/SequenceProcessing-Py",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
@@ -76,7 +77,7 @@
       <recent name="$PROJECT_DIR$/test" />
     </key>
   </component>
-  <component name="RunManager" selected="Python tests.Python tests for TestLabelledSentence.TestLabelledSentence">
+  <component name="RunManager">
     <configuration name="Python tests for TestLabelledSentence.TestLabelledSentence" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="SequenceProcessing" />
       <option name="ENV_FILES" value="" />
@@ -157,23 +158,6 @@
       <option name="_new_targetType" value="&quot;PATH&quot;" />
       <method v="2" />
     </configuration>
-    <recent_temporary>
-      <list>
-        <item itemvalue="Python tests.Python tests for TestLabelledSentence.TestLabelledSentence" />
-        <item itemvalue="Python tests.Python tests for TestSequenceCorpus.TestSequenceCorpus.test_corpus26" />
-        <item itemvalue="Python tests.Python tests for TestSequenceCorpus.TestSequenceCorpus.test_corpus01" />
-        <item itemvalue="Python tests.Python tests in TestSequenceCorpus.py" />
-        <item itemvalue="Python tests.Python tests for TestSequenceCorpus.TestSequenceCorpus.test_class_labels" />
-      </list>
-    </recent_temporary>
-  </component>
-  <component name="SharedIndexes">
-    <attachedChunks>
-      <set>
-        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-PY-241.18034.82" />
-        <option value="bundled-python-sdk-975db3bf15a3-2767605e8bc2-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-241.18034.82" />
-      </set>
-    </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">

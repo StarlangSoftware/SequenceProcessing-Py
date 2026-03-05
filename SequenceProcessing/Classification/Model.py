@@ -5,7 +5,7 @@ from Classification.Parameter.DeepNetworkParameter import DeepNetworkParameter
 
 from SequenceProcessing.Sequence.LabelledVectorizedWord import LabelledVectorizedWord
 from SequenceProcessing.Sequence.SequenceCorpus import SequenceCorpus
-from SequenceProcessing.Initializer.Initializer import Initializer
+from SequenceProcessing.Functions.AdditionByConstant import Initializer
 import numpy as np
 import pickle
 

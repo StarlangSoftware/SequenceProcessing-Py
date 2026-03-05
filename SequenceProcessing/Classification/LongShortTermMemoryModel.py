@@ -1,7 +1,7 @@
 from Math.Matrix import Matrix
 from Classification.Parameter.ActivationFunction import ActivationFunction
 from SequenceProcessing.Sequence.SequenceCorpus import SequenceCorpus
-from SequenceProcessing.Initializer.Initializer import Initializer
+from SequenceProcessing.Functions.AdditionByConstant import Initializer
 from Model import Model
 
 
