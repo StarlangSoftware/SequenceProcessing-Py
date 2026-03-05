@@ -1,5 +1,0 @@
-NlpToolkit-Math
-NlpToolkit-ComputationalGraph
-NlpToolkit-WordToVec
-NlpToolkit-Corpus
-NlpToolkit-Classification
