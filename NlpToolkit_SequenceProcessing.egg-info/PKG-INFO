@@ -1,0 +1,22 @@
+Metadata-Version: 2.4
+Name: NlpToolkit-SequenceProcessing
+Version: 1.0.0
+Summary: Sequence Processing library
+Home-page: https://github.com/StarlangSoftware/SequenceProcessing-Py
+Author: olcaytaner
+Author-email: olcay.yildiz@ozyegin.edu.tr
+Description-Content-Type: text/markdown
+Requires-Dist: NlpToolkit-Math
+Requires-Dist: NlpToolkit-ComputationalGraph
+Requires-Dist: NlpToolkit-WordToVec
+Requires-Dist: NlpToolkit-Corpus
+Requires-Dist: NlpToolkit-Classification
+Dynamic: author
+Dynamic: author-email
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: requires-dist
+Dynamic: summary
+
+# NlpToolkit-SequenceProcessing
