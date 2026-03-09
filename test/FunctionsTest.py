@@ -3,6 +3,9 @@ from Math.Tensor import Tensor
 from SequenceProcessing.Functions.AdditionByConstant import AdditionByConstant
 from SequenceProcessing.Functions.MultiplyByConstant import MultiplyByConstant
 from SequenceProcessing.Functions.Inverse import Inverse
+from SequenceProcessing.Functions.Mean import Mean
+
+
 
 class TestAdditionByConstant(unittest.TestCase):
 
@@ -69,6 +72,28 @@ class TestInverse(unittest.TestCase):
 
         self.assertEqual(out.getData(), [-4.0, -16.0, -25.0, -100.0])
 
+
+
+class TestMean(unittest.TestCase):
+
+    def test_calculate(self):
+        tensor = Tensor([1.0, 3.0, 2.0, 4.0], (2, 2))
+        func = Mean()
+
+        result = func.calculate(tensor)
+
+        self.assertEqual(result.getData(), [2.0, 2.0, 3.0, 3.0])
+        self.assertEqual(result.getShape(), (2, 2))
+
+    def test_derivative(self):
+        tensor = Tensor([1.0, 3.0, 2.0, 4.0], (2, 2))
+        backward = Tensor([1.0, 1.0, 1.0, 1.0], (2, 2))
+        func = Mean()
+
+        result = func.derivative(tensor, backward)
+
+        self.assertEqual(result.getData(), [0.5, 0.5, 0.5, 0.5])
+        self.assertEqual(result.getShape(), (2, 2))
 
 
 if __name__ == "__main__":
