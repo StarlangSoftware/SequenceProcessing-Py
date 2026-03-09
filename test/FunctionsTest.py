@@ -2,7 +2,7 @@ import unittest
 from Math.Tensor import Tensor
 from SequenceProcessing.Functions.AdditionByConstant import AdditionByConstant
 from SequenceProcessing.Functions.MultiplyByConstant import MultiplyByConstant
-
+from SequenceProcessing.Functions.Inverse import Inverse
 
 class TestAdditionByConstant(unittest.TestCase):
 
@@ -47,6 +47,28 @@ class TestMultiplyByConstant(unittest.TestCase):
         out = f.derivative(t, grad)
 
         self.assertEqual(out.getData(), [2.0, 2.0, 2.0])
+
+
+class TestInverse(unittest.TestCase):
+
+    def test_calculate(self):
+        t = Tensor([2.0, 4.0, 5.0, 10.0], (2, 2))
+        f = Inverse()
+
+        out = f.calculate(t)
+
+        self.assertEqual(out.getData(), [0.5, 0.25, 0.2, 0.1])
+        self.assertEqual(out.getShape(), (2, 2))
+
+    def test_derivative_literal_java(self):
+        t = Tensor([2.0, 4.0, 5.0, 10.0], (2, 2))
+        grad = Tensor([1.0, 1.0, 1.0, 1.0], (2, 2))
+        f = Inverse()
+
+        out = f.derivative(t, grad)
+
+        self.assertEqual(out.getData(), [-4.0, -16.0, -25.0, -100.0])
+
 
 
 if __name__ == "__main__":
