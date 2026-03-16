@@ -6,6 +6,186 @@ from SequenceProcessing.Functions.MultiplyByConstant import MultiplyByConstant
 from SequenceProcessing.Functions.Inverse import Inverse
 from SequenceProcessing.Functions.Mean import Mean
 from SequenceProcessing.Functions.Mask import Mask
+from SequenceProcessing.Functions.RemoveBias import RemoveBias
+from SequenceProcessing.Functions.SquareRoot import SquareRoot
+from SequenceProcessing.Functions.Switch import Switch
+from SequenceProcessing.Functions.Transpose import Transpose
+from SequenceProcessing.Functions.Variance import Variance
+
+
+class VarianceTest(unittest.TestCase):
+
+    def testCalculate(self):
+        """
+        Tests the forward computation of Variance.
+        """
+        tensor = Tensor([1.0, 2.0, 3.0, 4.0], (2, 2))
+        function = Variance()
+
+        result = function.calculate(tensor)
+
+        self.assertEqual([2.5, 2.5, 12.5, 12.5], result.getData())
+        self.assertEqual((2, 2), result.getShape())
+
+    def testDerivative(self):
+        """
+        Tests the backward computation of Variance.
+        """
+        tensor = Tensor([1.0, 2.0, 3.0, 4.0], (2, 2))
+        backward = Tensor([1.0, 1.0, 1.0, 1.0], (2, 2))
+        function = Variance()
+
+        result = function.derivative(tensor, backward)
+
+        self.assertEqual([1.0, 2.0, 3.0, 4.0], result.getData())
+        self.assertEqual((2, 2), result.getShape())
+
+
+class TransposeTest(unittest.TestCase):
+
+    def testCalculate(self):
+        """
+        Tests the forward transpose operation.
+        """
+        tensor = Tensor([1.0, 2.0, 3.0, 4.0], (2, 2))
+        function = Transpose()
+
+        result = function.calculate(tensor)
+
+        self.assertEqual([1.0, 3.0, 2.0, 4.0], result.getData())
+        self.assertEqual((2, 2), result.getShape())
+
+    def testDerivative(self):
+        """
+        Tests the backward transpose operation.
+        """
+        value = Tensor([1.0, 2.0, 3.0, 4.0], (2, 2))
+        backward = Tensor([1.0, 3.0, 2.0, 4.0], (2, 2))
+
+        function = Transpose()
+
+        result = function.derivative(value, backward)
+
+        self.assertEqual([1.0, 2.0, 3.0, 4.0], result.getData())
+        self.assertEqual((2, 2), result.getShape())
+
+
+class SwitchTest(unittest.TestCase):
+
+    def testCalculateWhenTurnIsTrue(self):
+        """
+        Tests calculate when turn is True.
+        """
+        tensor = Tensor([1.0, 2.0, 3.0], (1, 3))
+        function = Switch()
+
+        result = function.calculate(tensor)
+
+        self.assertEqual([1.0, 2.0, 3.0], result.getData())
+        self.assertEqual((1, 3), result.getShape())
+
+    def testCalculateWhenTurnIsFalse(self):
+        """
+        Tests calculate when turn is False.
+        """
+        tensor = Tensor([1.0, 2.0, 3.0], (1, 3))
+        function = Switch()
+        function.setTurn(False)
+
+        result = function.calculate(tensor)
+
+        self.assertEqual([0.0, 0.0, 0.0], result.getData())
+        self.assertEqual((1, 3), result.getShape())
+
+    def testDerivativeWhenTurnIsTrue(self):
+        """
+        Tests derivative when turn is True.
+        """
+        value = Tensor([1.0, 2.0, 3.0], (1, 3))
+        backward = Tensor([0.5, 0.6, 0.7], (1, 3))
+        function = Switch()
+
+        result = function.derivative(value, backward)
+
+        self.assertEqual([0.5, 0.6, 0.7], result.getData())
+        self.assertEqual((1, 3), result.getShape())
+
+    def testDerivativeWhenTurnIsFalse(self):
+        """
+        Tests derivative when turn is False.
+        """
+        value = Tensor([1.0, 2.0, 3.0], (1, 3))
+        backward = Tensor([0.5, 0.6, 0.7], (1, 3))
+        function = Switch()
+        function.setTurn(False)
+
+        result = function.derivative(value, backward)
+
+        self.assertEqual([0.0, 0.0, 0.0], result.getData())
+        self.assertEqual((1, 3), result.getShape())
+
+
+class SquareRootTest(unittest.TestCase):
+
+    def testCalculate(self):
+        """
+        Tests the forward computation of SquareRoot.
+        """
+        tensor = Tensor([3.0, 8.0], (1, 2))
+        function = SquareRoot(1.0)
+
+        result = function.calculate(tensor)
+
+        expected = [2.0, 3.0]
+
+        self.assertEqual(expected, result.getData())
+        self.assertEqual((1, 2), result.getShape())
+
+    def testDerivative(self):
+        """
+        Tests the derivative computation of SquareRoot.
+        """
+        tensor = Tensor([3.0, 8.0], (1, 2))
+        backward = Tensor([1.0, 1.0], (1, 2))
+        function = SquareRoot(1.0)
+
+        result = function.derivative(tensor, backward)
+
+        expected = [1.0 / 4.0, 1.0 / 6.0]
+
+        self.assertAlmostEqual(expected[0], result.getData()[0], places=7)
+        self.assertAlmostEqual(expected[1], result.getData()[1], places=7)
+        self.assertEqual((1, 2), result.getShape())
+
+
+
+class RemoveBiasTest(unittest.TestCase):
+
+    def testCalculate(self):
+        """
+        Tests the forward computation of RemoveBias.
+        """
+        tensor = Tensor([1.0, 2.0, 3.0, 99.0], (1, 4))
+        function = RemoveBias()
+
+        result = function.calculate(tensor)
+
+        self.assertEqual([1.0, 2.0, 3.0], result.getData())
+        self.assertEqual((1, 3), result.getShape())
+
+    def testDerivative(self):
+        """
+        Tests the backward computation of RemoveBias.
+        """
+        value = Tensor([1.0, 2.0, 3.0], (1, 3))
+        backward = Tensor([0.5, 0.6, 0.7], (1, 3))
+        function = RemoveBias()
+
+        result = function.derivative(value, backward)
+
+        self.assertEqual([0.5, 0.6, 0.7, 0.0], result.getData())
+        self.assertEqual((1, 4), result.getShape())
+
 
 
 class TestAdditionByConstant(unittest.TestCase):
@@ -34,17 +214,17 @@ class TestAdditionByConstant(unittest.TestCase):
 class TestMultiplyByConstant(unittest.TestCase):
 
     def test_calculate(self):
-        t = Tensor([1.0, 2.0, 3.0], (3,))
+        t = Tensor([1.0, 2.0, 3.0], (1, 3))
         f = MultiplyByConstant(2.0)
 
         out = f.calculate(t)
 
         self.assertEqual(out.getData(), [2.0, 4.0, 6.0])
-        self.assertEqual(out.getShape(), (3,))
+        self.assertEqual(out.getShape(), (1, 3))
 
     def test_derivative(self):
-        t = Tensor([1.0, 2.0, 3.0], (3,))
-        grad = Tensor([1.0, 1.0, 1.0], (3,))
+        t = Tensor([1.0, 2.0, 3.0], (1, 3))
+        grad = Tensor([1.0, 1.0, 1.0], (1, 3))
 
         f = MultiplyByConstant(2.0)
 
