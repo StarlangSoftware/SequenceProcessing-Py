@@ -1,19 +1,28 @@
 from typing import List
 
-from ComputationalGraph.Function import Function
+from ComputationalGraph.Function.Function import Function
 from ComputationalGraph.Node.ComputationalNode import ComputationalNode
 from ComputationalGraph.Node.FunctionNode import FunctionNode
 from Math.Tensor import Tensor
 
 
 class Inverse(Function):
+    """
+    Computes the element-wise inverse of a tensor.
+    """
+
+    def __init__(self):
+        """
+        Constructor for Inverse.
+        """
+        pass
 
     def calculate(self, tensor: Tensor) -> Tensor:
         """
-        Calculates the element-wise inverse of the given tensor.
+        Calculates the element-wise inverse of the input tensor.
 
         :param tensor: Input tensor.
-        :return: Tensor whose elements are the inverses of the input tensor elements.
+        :return: Output tensor whose elements are 1 / x.
         """
         values = []
         shape = tensor.getShape()
@@ -24,35 +33,37 @@ class Inverse(Function):
 
         return Tensor(values, shape)
 
-    def derivative(self, tensor: Tensor, backward: Tensor) -> Tensor:
+    def derivative(self, value: Tensor, backward: Tensor) -> Tensor:
         """
-        Calculates the derivative of the inverse function and multiplies it
-        element-wise with the backward tensor.
-        
-        :param tensor: Input tensor used in the forward pass.
+        Calculates the derivative of the inverse operation.
+
+        For f(x) = 1 / x, the derivative is:
+            f'(x) = -1 / x^2
+
+        :param value: Current tensor value.
         :param backward: Backward gradient tensor.
-        :return: Result of the hadamard product of backward tensor and local derivative tensor.
+        :return: Resulting gradient tensor.
         """
         values = []
-        shape = tensor.getShape()
+        shape = value.getShape()
 
         for i in range(shape[0]):
             for j in range(shape[1]):
-                value = tensor.getValue((i, j))
-                values.append(-1.0 / (value * value))
+                current_value = value.getValue((i, j))
+                values.append(-1.0 / (current_value * current_value))
 
         return backward.hadamardProduct(Tensor(values, shape))
 
     def addEdge(self,
-                inputNodes: List[ComputationalNode],
-                isBiased: bool) -> ComputationalNode:
+                input_nodes: List[ComputationalNode],
+                is_biased: bool) -> ComputationalNode:
         """
-        Adds this function as an edge in the computational graph.
+        Adds this function as an edge to the computational graph.
 
-        :param inputNodes: List of input computational nodes.
-        :param isBiased: Bias information of the new node.
-        :return: Newly created function node.
+        :param input_nodes: Input computational nodes.
+        :param is_biased: Indicates whether the edge is biased.
+        :return: Newly created computational node.
         """
-        new_node = FunctionNode(isBiased, self)
-        inputNodes[0].add(new_node)
+        new_node = FunctionNode(is_biased, self)
+        input_nodes[0].add(new_node)
         return new_node

@@ -1,42 +1,79 @@
-from ComputationalGraph.Function import Function
+from typing import List
+
+from ComputationalGraph.Function.Function import Function
+from ComputationalGraph.Node.ComputationalNode import ComputationalNode
+from ComputationalGraph.Node.FunctionNode import FunctionNode
 from Math.Tensor import Tensor
 
 
 class AdditionByConstant(Function):
-    constant: float
+    """
+    Adds a constant value to each element of the input tensor.
+    """
+
+    __constant: float
 
     def __init__(self, constant: float):
         """
-        Initializes the AdditionByConstant function.
+        Constructor for AdditionByConstant.
 
-        :param constant: Constant value to be added to each tensor element.
+        :param constant: Constant value to add to each tensor element.
         """
-        self.constant = float(constant)
+        self.__constant = float(constant)
+
+    def getConstant(self) -> float:
+        """
+        Getter for constant value.
+
+        :return: Constant value.
+        """
+        return self.__constant
+
+    def setConstant(self, constant: float) -> None:
+        """
+        Setter for constant value.
+
+        :param constant: New constant value.
+        """
+        self.__constant = float(constant)
 
     def calculate(self, tensor: Tensor) -> Tensor:
         """
         Adds the constant value to each element of the tensor.
 
         :param tensor: Input tensor.
-        :return: Tensor after adding the constant to each value.
+        :return: Output tensor after addition.
         """
-        values = [v + self.constant for v in tensor.getData()]
+        values = []
+        tensor_values = tensor.getData()
+
+        for val in tensor_values:
+            values.append(val + self.__constant)
+
         return Tensor(values, tensor.getShape())
 
-    def derivative(self, tensor: Tensor, tensor1: Tensor) -> Tensor:
+    def derivative(self, value: Tensor, backward: Tensor) -> Tensor:
         """
         Computes the derivative of the addition operation.
 
-        :param tensor: Input tensor.
-        :param tensor1: Gradient tensor.
-        :return: The propagated gradient tensor.
-        """
-        return tensor1
+        Since derivative of x + c is 1, the gradient passes through unchanged.
 
-    def getConstant(self) -> float:
+        :param value: Current tensor value.
+        :param backward: Backward gradient tensor.
+        :return: Gradient tensor.
         """
-        Returns the constant value.
+        return backward
 
-        :return: constant
+    def addEdge(self,
+                input_nodes: List[ComputationalNode],
+                is_biased: bool) -> ComputationalNode:
         """
-        return self.constant
+        Adds this function as an edge to the computational graph.
+
+        :param input_nodes: Input computational nodes.
+        :param is_biased: Indicates whether the edge is biased.
+        :return: Newly created computational node.
+        """
+        new_node = FunctionNode(is_biased, self)
+        input_nodes[0].add(new_node)
+        return new_node

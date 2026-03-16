@@ -53,36 +53,36 @@ class TestMultiplyByConstant(unittest.TestCase):
         self.assertEqual(out.getData(), [2.0, 2.0, 2.0])
 
 
-# class InverseTest(unittest.TestCase):
+class InverseTest(unittest.TestCase):
 
-#     def testCalculate(self):
-#         """
-#         Tests element-wise inverse calculation.
-#         """
-#         inverse = Inverse()
-#         tensor = Tensor([2.0, 4.0, 0.5, 1.0], (2, 2))
+    def testCalculate(self):
+        """
+        Tests element-wise inverse calculation.
+        """
+        inverse = Inverse()
+        tensor = Tensor([2.0, 4.0, 0.5, 1.0], (2, 2))
 
-#         result = inverse.calculate(tensor)
+        result = inverse.calculate(tensor)
 
-#         self.assertAlmostEqual(0.5, result.getValue((0, 0)))
-#         self.assertAlmostEqual(0.25, result.getValue((0, 1)))
-#         self.assertAlmostEqual(2.0, result.getValue((1, 0)))
-#         self.assertAlmostEqual(1.0, result.getValue((1, 1)))
+        self.assertAlmostEqual(0.5, result.getValue((0, 0)))
+        self.assertAlmostEqual(0.25, result.getValue((0, 1)))
+        self.assertAlmostEqual(2.0, result.getValue((1, 0)))
+        self.assertAlmostEqual(1.0, result.getValue((1, 1)))
 
-#     def testDerivative(self):
-#         """
-#         Tests derivative of inverse function.
-#         """
-#         inverse = Inverse()
-#         tensor = Tensor([2.0, 4.0, 0.5, 1.0], (2, 2))
-#         backward = Tensor([1.0, 1.0, 1.0, 1.0], (2, 2))
+    def testDerivative(self):
+        """
+        Tests derivative of inverse function.
+        """
+        inverse = Inverse()
+        tensor = Tensor([2.0, 4.0, 0.5, 1.0], (2, 2))
+        backward = Tensor([1.0, 1.0, 1.0, 1.0], (2, 2))
 
-#         result = inverse.derivative(tensor, backward)
+        result = inverse.derivative(tensor, backward)
 
-#         self.assertAlmostEqual(-0.25, result.getValue((0, 0)))
-#         self.assertAlmostEqual(-0.0625, result.getValue((0, 1)))
-#         self.assertAlmostEqual(-4.0, result.getValue((1, 0)))
-#         self.assertAlmostEqual(-1.0, result.getValue((1, 1)))
+        self.assertAlmostEqual(-0.25, result.getValue((0, 0)))
+        self.assertAlmostEqual(-0.0625, result.getValue((0, 1)))
+        self.assertAlmostEqual(-4.0, result.getValue((1, 0)))
+        self.assertAlmostEqual(-1.0, result.getValue((1, 1)))
 
 
 
