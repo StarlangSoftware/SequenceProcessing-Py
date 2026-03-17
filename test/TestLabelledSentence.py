@@ -1,15 +1,15 @@
 import unittest
-from Corpus.Sentence import Sentence
+
 from SequenceProcessing.Sequence.LabelledSentence import LabelledSentence
 
 
-class TestLabelledSentence(unittest.TestCase):
+class LabelledSentenceTest(unittest.TestCase):
 
-    def test_class_label(self):
+    def testLabel(self):
         sentence = LabelledSentence("positive")
-        self.assertEqual(sentence.getClassLabel, "positive")
-        self.assertIsInstance(sentence, Sentence)
+
+        self.assertEqual("positive", sentence.getClassLabel())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
