@@ -1,145 +1,193 @@
-from Math.Matrix import Matrix
-from Classification.Parameter.ActivationFunction import ActivationFunction
-from SequenceProcessing.Sequence.SequenceCorpus import SequenceCorpus
-from SequenceProcessing.Functions.AdditionByConstant import Initializer
-from Model import Model
+from typing import List
+import random
+
+from ComputationalGraph.NeuralNetworkParameter import NeuralNetworkParameter
+from ComputationalGraph.Function.Softmax import Softmax
+from ComputationalGraph.Function.Tanh import Tanh
+from ComputationalGraph.Node.ComputationalNode import ComputationalNode
+from ComputationalGraph.Node.ConcatenatedNode import ConcatenatedNode
+from ComputationalGraph.Node.MultiplicationNode import MultiplicationNode
+
+from Math.Tensor import Tensor
+
+from SequenceProcessing.Functions.RemoveBias import RemoveBias
+from SequenceProcessing.Functions.Switch import Switch
+from SequenceProcessing.Parameters.RecurrentNeuralNetworkParameter import RecurrentNeuralNetworkParameter
+from SequenceProcessing.Classification.RecurrentNeuralNetworkModel import RecurrentNeuralNetworkModel
 
 
-class LongShortTermMemoryModel(Model):
-    def __init__(self):
-        super().__init__()
-        self.fVectors = []
-        self.fWeights = []
-        self.fRecurrentWeights = []
-        self.gVectors = []
-        self.gWeights = []
-        self.gRecurrentWeights = []
-        self.iVectors = []
-        self.iWeights = []
-        self.iRecurrentWeights = []
-        self.oVectors = []
-        self.oWeights = []
-        self.oRecurrentWeights = []
-        self.cVectors = []
-        self.cOldVectors = []
+class LongShortTermMemoryModel(RecurrentNeuralNetworkModel):
+    """
+    Long Short-Term Memory model implementation.
+    """
 
-    def train(self, corpus: SequenceCorpus, parameters, initializer: Initializer):
-        layers = [corpus.getSentence(0).getWord(0).getVector().size()]
-        for i in range(parameters.layerSize()):
-            layers.append(parameters.getHiddenNodes(i))
-        layers.append(len(corpus.getClassLabels()))
+    __switches: List[Switch]
 
-        for i in range(parameters.layerSize()):
-            self.fVectors.append(Matrix(parameters.getHiddenNodes(i), 1))
-            self.gVectors.append(Matrix(parameters.getHiddenNodes(i), 1))
-            self.iVectors.append(Matrix(parameters.getHiddenNodes(i), 1))
-            self.oVectors.append(Matrix(parameters.getHiddenNodes(i), 1))
-            self.cVectors.append(Matrix(parameters.getHiddenNodes(i), 1))
-            self.cOldVectors.append(Matrix(parameters.getHiddenNodes(i), 1))
+    def __init__(self, parameter: NeuralNetworkParameter, word_embedding_length: int):
+        """
+        Constructor for LongShortTermMemoryModel.
 
-            self.fWeights.append(initializer.initialize(layers[i + 1], layers[i] + 1, parameters.getSeed()))
-            self.gWeights.append(initializer.initialize(layers[i + 1], layers[i] + 1, parameters.getSeed()))
-            self.iWeights.append(initializer.initialize(layers[i + 1], layers[i] + 1, parameters.getSeed()))
-            self.oWeights.append(initializer.initialize(layers[i + 1], layers[i] + 1, parameters.getSeed()))
+        :param parameter: Neural network parameter object.
+        :param word_embedding_length: Length of word embeddings.
+        """
+        super().__init__(parameter, word_embedding_length)
+        self.__switches = []
 
-            self.fRecurrentWeights.append(
-                initializer.initialize(parameters.getHiddenNodes(i), parameters.getHiddenNodes(i), parameters.getSeed())
+    def getSwitches(self) -> List[Switch]:
+        """
+        Getter for switches.
+
+        :return: List of switch nodes.
+        """
+        return self.__switches
+
+    def setSwitches(self, switches: List[Switch]) -> None:
+        """
+        Setter for switches.
+
+        :param switches: New list of switch nodes.
+        """
+        self.__switches = switches
+
+    def train(self, train_set: List[Tensor]) -> None:
+        """
+        Trains the LSTM model.
+
+        :param train_set: Training set.
+        """
+        random_generator = random.Random(self.parameters.getSeed())
+        time_step = self.findTimeStep(train_set)
+
+        weights = []
+        recurrent_weights = []
+
+        current_length = self.wordEmbeddingLength + 1
+        recurrent_parameter = self.parameters
+
+        for i in range(recurrent_parameter.size()):
+            for j in range(4):
+                weights.append(
+                    MultiplicationNode(
+                        Tensor(
+                            recurrent_parameter.initializeWeights(
+                                current_length,
+                                recurrent_parameter.getHiddenLayer(i),
+                                random_generator
+                            ),
+                            (current_length, recurrent_parameter.getHiddenLayer(i))
+                        )
+                    )
+                )
+
+                recurrent_weights.append(
+                    MultiplicationNode(
+                        Tensor(
+                            recurrent_parameter.initializeWeights(
+                                recurrent_parameter.getHiddenLayer(i),
+                                recurrent_parameter.getHiddenLayer(i),
+                                random_generator
+                            ),
+                            (recurrent_parameter.getHiddenLayer(i),
+                             recurrent_parameter.getHiddenLayer(i))
+                        )
+                    )
+                )
+
+            current_length = recurrent_parameter.getHiddenLayer(i) + 1
+
+        weights.append(
+            MultiplicationNode(
+                Tensor(
+                    recurrent_parameter.initializeWeights(
+                        current_length,
+                        recurrent_parameter.getClassLabelSize(),
+                        random_generator
+                    ),
+                    (current_length, recurrent_parameter.getClassLabelSize())
+                )
             )
-            self.gRecurrentWeights.append(
-                initializer.initialize(parameters.getHiddenNodes(i), parameters.getHiddenNodes(i), parameters.getSeed())
-            )
-            self.iRecurrentWeights.append(
-                initializer.initialize(parameters.getHiddenNodes(i), parameters.getHiddenNodes(i), parameters.getSeed())
-            )
-            self.oRecurrentWeights.append(
-                initializer.initialize(parameters.getHiddenNodes(i), parameters.getHiddenNodes(i), parameters.getSeed())
-            )
+        )
 
-        super().train(corpus, parameters, initializer)
+        current_old_layers = []
+        current_old_c_values = []
+        output_nodes = []
 
-    def calculateOutput(self, sentence, index):
-        word = sentence.getWord(index)
-        self.createInputVector(word)
+        for k in range(time_step):
+            self.__switches.append(Switch())
 
-        kVectors = []
-        jVectors = []
+            new_old_layers = []
+            new_old_c_values = []
 
-        for i in range(len(self.layers) - 2):
-            # Forget Gate
-            self.fVectors[i] = self.calculateActivationFunction(
-                self.fRecurrentWeights[i].multiply(self.oldLayers[i])
-                + self.fWeights[i].multiply(self.layers[i]),
-                self.activationFunction,
-            )
+            input_node = MultiplicationNode(False, True)
+            self.inputNodes.append(input_node)
 
-            # Memory Cell Update
-            kVectors.append(self.cOldVectors[i].elementProduct(self.fVectors[i]))
-            self.gVectors[i] = self.calculateActivationFunction(
-                self.gRecurrentWeights[i].multiply(self.oldLayers[i])
-                + self.gWeights[i].multiply(self.layers[i]),
-                ActivationFunction.TANH,
-            )
-            self.iVectors[i] = self.calculateActivationFunction(
-                self.iRecurrentWeights[i].multiply(self.oldLayers[i])
-                + self.iWeights[i].multiply(self.layers[i]),
-                self.activationFunction,
-            )
-            jVectors.append(self.gVectors[i].elementProduct(self.iVectors[i]))
+            current = input_node
 
-            self.cVectors[i] = kVectors[i] + jVectors[i]
+            for i in range(0, len(weights) - 1, 4):
+                if len(current_old_layers) > 0:
+                    aw = self.addEdge(current, weights[i])
 
-            # Output Gate
-            self.oVectors[i] = self.calculateActivationFunction(
-                self.oRecurrentWeights[i].multiply(self.oldLayers[i])
-                + self.oWeights[i].multiply(self.layers[i]),
-                self.activationFunction,
-            )
+                    o_without_bias = self.addEdge(current_old_layers[i // 4], RemoveBias())
 
-            self.layers[i + 1] = self.oVectors[i].elementProduct(
-                self.calculateActivationFunction(self.cVectors[i], ActivationFunction.TANH)
-            )
-            self.layers[i + 1] = self.biased(self.layers[i + 1])
+                    ou = self.addEdge(o_without_bias, recurrent_weights[i])
+                    aw_ou = self.addAdditionEdge(aw, ou, False)
+                    it = self.addEdge(aw_ou, recurrent_parameter.getActivationFunction(i))
 
-        self.layers[-1] += self.weights[-1].multiply(self.layers[-2])
-        self.normalizeOutput()
+                    aw = self.addEdge(current, weights[i + 1])
+                    ou = self.addEdge(o_without_bias, recurrent_weights[i + 1])
+                    aw_ou = self.addAdditionEdge(aw, ou, False)
+                    ft = self.addEdge(aw_ou, recurrent_parameter.getActivationFunction(i + 1))
 
-    def oldLayersUpdate(self):
-        for i in range(len(self.oldLayers)):
-            for j in range(self.oldLayers[i].getRow()):
-                self.oldLayers[i].setValue(j, 0, self.layers[i + 1].getValue(j, 0))
-                self.cOldVectors[i].setValue(j, 0, self.cVectors[i].getValue(j, 0))
+                    aw = self.addEdge(current, weights[i + 2])
+                    ou = self.addEdge(o_without_bias, recurrent_weights[i + 2])
+                    aw_ou = self.addAdditionEdge(aw, ou, False)
+                    ot = self.addEdge(aw_ou, recurrent_parameter.getActivationFunction(i + 2))
 
-    def backpropagation(self, sentence, index, learningRate):
-        word = sentence.getWord(index)
-        rMinusY = self.calculateRMinusY(word)
-        rMinusY.multiplyWithConstant(learningRate)
+                    aw = self.addEdge(current, weights[i + 3])
+                    ou = self.addEdge(o_without_bias, recurrent_weights[i + 3])
+                    aw_ou = self.addAdditionEdge(aw, ou, False)
+                    c_temp = self.addEdge(aw_ou, Tanh())
 
-        deltaWeight = rMinusY.multiply(self.layers[-2].transpose())
+                    ft_ct1 = self.addEdge(ft, current_old_c_values[i // 4], False, True)
+                    it_c_temp = self.addEdge(it, c_temp, False, True)
+                    cmb = self.addAdditionEdge(ft_ct1, it_c_temp, False)
 
-        # Update weights and recurrent weights
-        for i in range(len(self.fWeights)):
-            self.fWeights[i] += deltaWeight
-            self.gWeights[i] += deltaWeight
-            self.iWeights[i] += deltaWeight
-            self.oWeights[i] += deltaWeight
+                    ct = self.addEdge(cmb, recurrent_parameter.getActivationFunction(i + 3))
+                    tanh_ct = self.addEdge(ct, Tanh())
+                    a_function = self.addEdge(tanh_ct, ot, True, True)
+                else:
+                    aw = self.addEdge(current, weights[i])
+                    it = self.addEdge(aw, recurrent_parameter.getActivationFunction(i))
 
-            self.fRecurrentWeights[i] += deltaWeight
-            self.gRecurrentWeights[i] += deltaWeight
-            self.iRecurrentWeights[i] += deltaWeight
-            self.oRecurrentWeights[i] += deltaWeight
+                    aw = self.addEdge(current, weights[i + 1])
+                    ot = self.addEdge(aw, recurrent_parameter.getActivationFunction(i + 2))
 
-    def clear(self):
-        super().clear()
-        for l in range(len(self.layers) - 2):
-            for m in range(self.fVectors[l].getRow()):
-                self.fVectors[l].setValue(m, 0, 0.0)
-                self.gVectors[l].setValue(m, 0, 0.0)
-                self.iVectors[l].setValue(m, 0, 0.0)
-                self.oVectors[l].setValue(m, 0, 0.0)
-                self.cVectors[l].setValue(m, 0, 0.0)
+                    aw = self.addEdge(current, weights[i + 3])
+                    c_temp = self.addEdge(aw, Tanh())
 
-    def clearOldValues(self):
-        for i in range(len(self.oldLayers)):
-            for k in range(self.oldLayers[i].getRow()):
-                self.oldLayers[i].setValue(k, 0, 0.0)
-                self.cOldVectors[i].setValue(k, 0, 0.0)
+                    it_c_temp = self.addEdge(it, c_temp, False, True)
+                    ct = self.addEdge(it_c_temp, recurrent_parameter.getActivationFunction(i + 3))
+
+                    tanh_ct = self.addEdge(ct, Tanh())
+                    a_function = self.addEdge(tanh_ct, ot, True, True)
+
+                current = a_function
+                new_old_layers.append(a_function)
+                new_old_c_values.append(ct)
+
+            current_old_layers = new_old_layers
+            current_old_c_values = new_old_c_values
+
+            node = self.addEdge(current, weights[len(weights) - 1])
+            output_nodes.append(self.addEdge(node, self.__switches[k]))
+
+        concatenated_node = self.concatEdges(output_nodes, 0)
+        self.outputNode = self.addEdge(concatenated_node, Softmax())
+
+        class_label_node = ComputationalNode()
+        self.inputNodes.append(class_label_node)
+
+        loss_inputs = [self.outputNode, class_label_node]
+        self.addFunctionEdge(loss_inputs, self.parameters.getLossFunction(), False)
+
+        super().train(train_set, random_generator)
