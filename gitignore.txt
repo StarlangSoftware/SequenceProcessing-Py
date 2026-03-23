@@ -1,0 +1,32 @@
+# Python / packaging
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+dist/
+build/
+pip-wheel-metadata/
+
+# Virtualenv
+.venv/
+venv/
+ENV/
+.env
+
+# Pytest
+.pytest_cache/
+
+# IDE
+.vscode/
+.idea/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Local stray files
+=
+pyenv.cfg
+
+
+*.pyc
