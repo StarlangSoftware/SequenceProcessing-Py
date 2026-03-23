@@ -1,199 +1,165 @@
-from Math.Matrix import Matrix
+from typing import List
+import random
 
-from SequenceProcessing.Classification.Model import Model
-from Classification.Parameter.ActivationFunction import ActivationFunction
+from ComputationalGraph.Function.Negation import Negation
+from ComputationalGraph.Function.Softmax import Softmax
+from ComputationalGraph.Function.Tanh import Tanh
+from ComputationalGraph.NeuralNetworkParameter import NeuralNetworkParameter
+from ComputationalGraph.Node.ComputationalNode import ComputationalNode
+from ComputationalGraph.Node.ConcatenatedNode import ConcatenatedNode
+from ComputationalGraph.Node.MultiplicationNode import MultiplicationNode
+
+from SequenceProcessing.Functions.AdditionByConstant import AdditionByConstant
+from SequenceProcessing.Functions.RemoveBias import RemoveBias
+from SequenceProcessing.Functions.Switch import Switch
+
+from Math.Tensor import Tensor
+from SequenceProcessing.Parameters.RecurrentNeuralNetworkParameter import RecurrentNeuralNetworkParameter
+
+from SequenceProcessing.Classification.RecurrentNeuralNetworkModel import RecurrentNeuralNetworkModel
 
 
-class GatedRecurrentUnitModel(Model):
+class GatedRecurrentUnitModel(RecurrentNeuralNetworkModel):
+    """
+    Gated Recurrent Unit (GRU) model implementation.
+    """
 
-    def __init__(self):
-        super().__init__()
-        self.aVectors = []
-        self.zVectors = []
-        self.rVectors = []
-        self.zWeights = []
-        self.rRecurrentWeights = []
-        self.rWeights = []
-        self.zRecurrentWeights = []
+    __switches: List[Switch]
 
-    def train(self, corpus, parameters, initializer):
+    def __init__(self, parameter: NeuralNetworkParameter, word_embedding_length: int):
+        """
+        Constructor for GRU model.
 
-        seed = parameters.getSeed()
+        :param parameter: Neural network parameters.
+        :param word_embedding_length: Word embedding size.
+        """
+        super().__init__(parameter, word_embedding_length)
+        self.__switches = []
 
-        # Initialize the layers list
-        layers = [corpus.getSentence(0).getWord(0).getVector().size()]
+    def train(self, train_set: List[Tensor]) -> None:
+        """
+        Trains the GRU model.
 
-        for i in range(parameters.layerSize()):
-            layers.append(parameters.getHiddenNodes(i))
+        :param train_set: Training dataset.
+        """
+        random_generator = random.Random(self.parameters.getSeed())
+        time_step = self.findTimeStep(train_set)
 
-        layers.append(len(corpus.getClassLabels()))
+        weights = []
+        recurrent_weights = []
 
-        # Initialize lists for vectors and weights
-        self.aVectors = []
-        self.zVectors = []
-        self.rVectors = []
-        self.zWeights = []
-        self.zRecurrentWeights = []
-        self.rWeights = []
-        self.rRecurrentWeights = []
+        current_length = self.wordEmbeddingLength + 1
 
-        for i in range(parameters.layerSize()):
-            # Create matrices for vectors
-            self.aVectors.append(Matrix(parameters.getHiddenNodes(i), 1))
-            self.zVectors.append(Matrix(parameters.getHiddenNodes(i), 1))
-            self.rVectors.append(Matrix(parameters.getHiddenNodes(i), 1))
-
-            # Initialize weights using the provided initializer
-            self.zWeights.append(initializer.initialize(
-                layers[i + 1], layers[i] + 1, seed)
-            )
-            self.rWeights.append(initializer.initialize(
-                layers[i + 1], layers[i] + 1, seed)
-            )
-            self.zRecurrentWeights.append(initializer.initialize(
-                parameters.getHiddenNodes(i), parameters.getHiddenNodes(i), seed)
-            )
-            self.rRecurrentWeights.append(initializer.initialize(
-                parameters.getHiddenNodes(i), parameters.getHiddenNodes(i), seed)
-            )
-
-        # Call the superclass train method
-        super().train(corpus, parameters, initializer)
-
-    def clear(self):
-        super().clear()
-        for i in range(len(self.layers) - 2):
-            for m in range(self.aVectors[i].getRow()):
-                self.aVectors[i].setValue(m, 0, 0.0)
-                self.zVectors[i].setValue(m, 0, 0.0)
-                self.rVectors[i].setValue(m, 0, 0.0)
-
-    def calculateOutput(self, sentence, index):
-        word = sentence.getWord(index)
-        self.createInputVector(word)
-        for i in range(len(self.layers) - 2):
-            self.rVectors[i].append(self.rWeights[i].multiply(self.layers[i]))
-            self.zVectors[i].append(self.zWeights[i].multiply(self.layers[i]))
-            self.rVectors[i].append(self.rRecurrentWeights[i].multiply(self.oldLayers[i]))
-            self.zVectors[i].append(self.zRecurrentWeights[i].multiply(self.oldLayers[i]))
-
-            self.rVectors[i] = self.calculateActivationFunction(self.rVectors[i], self.activationFunction)
-            self.zVectors[i] = self.calculateActivationFunction(self.zVectors[i], self.activationFunction)
-
-            self.aVectors[i].append(
-                self.recurrentWeights[i].multiply(
-                    self.rVectors[i].elementProduct(self.oldLayers[i])
+        # Initialize weights
+        for i in range(self.parameters.size()):
+            for j in range(3):
+                w = Tensor(
+                    self.parameters.initializeWeights(
+                        current_length,
+                        self.parameters.getHiddenLayer(i),
+                        random_generator
+                    ),
+                    (current_length, self.parameters.getHiddenLayer(i))
                 )
-            )
-            self.aVectors[i].append(self.weights[i].multiply(self.layers[i]))
+                weights.append(MultiplicationNode(w))
 
-            self.aVectors[i] = self.calculateActivationFunction(self.aVectors[i], ActivationFunction.TANH)
-
-            self.layers[i + 1].append(
-                self.calculateOneMinusMatrix(self.zVectors[i]).elementProduct(self.oldLayers[i])
-            )
-            self.layers[i + 1].append(self.zVectors[i].elementProduct(self.aVectors[i]))
-            self.layers[i + 1] = self.biased(self.layers[i + 1])
-
-        self.layers[-1].append(
-            self.weights[-1].multiply(self.layers[-2])
-        )
-        self.normalizeOutput()
-
-    def backpropagation(self, sentence, index, learningRate):
-        word = sentence.getWord(index)
-        rMinusY = self.calculateRMinusY(word)
-        rMinusY.multiplyWithConstant(learningRate)
-
-        deltaWeights = []
-        deltaRecurrentWeights = []
-        rDeltaWeights = []
-        rDeltaRecurrentWeights = []
-        zDeltaWeights = []
-        zDeltaRecurrentWeights = []
-
-        deltaWeights.append(rMinusY.multiply(self.layers[-2].transpose()))
-        deltaWeights.append(
-            rMinusY.transpose()
-            .multiply(
-                self.weights[-1].partial(0, self.weights[-1].getRow() - 1, 0, self.weights[-1].getColumn() - 2)
-            )
-            .transpose()
-        )
-        deltaRecurrentWeights.append(deltaWeights[-1].clone())
-        rDeltaWeights.append(deltaWeights[-1].clone())
-        rDeltaRecurrentWeights.append(deltaWeights[-1].clone())
-        zDeltaWeights.append(deltaWeights[-1].clone())
-        zDeltaRecurrentWeights.append(deltaWeights[-1].clone())
-
-        for i in range(self.parameters.layerSize() - 1, -1, -1):
-            delta = deltaWeights[-1].elementProduct(self.zVectors[i]).elementProduct(
-                self.derivative(self.aVectors[i], ActivationFunction.TANH)
-            )
-            zDelta = zDeltaWeights[-1].elementProduct(
-                self.aVectors[i].difference(self.oldLayers[i])
-            ).elementProduct(
-                self.derivative(self.zVectors[i], self.activationFunction)
-            )
-            rDelta = (
-                rDeltaWeights[-1]
-                .elementProduct(self.aVectors[i].difference(self.oldLayers[i]))
-                .elementProduct(self.derivative(self.zVectors[i], self.activationFunction))
-                .transpose()
-                .multiply(self.recurrentWeights[i])
-                .transpose()
-                .elementProduct(self.oldLayers[i])
-                .elementProduct(self.derivative(self.rVectors[i], self.activationFunction))
-            )
-
-            deltaWeights[-1] = delta.multiply(self.layers[i].transpose())
-            deltaRecurrentWeights[-1] = delta.multiply(
-                self.rVectors[i].elementProduct(self.oldLayers[i]).transpose()
-            )
-            zDeltaWeights[-1] = zDelta.multiply(self.layers[i].transpose())
-            zDeltaRecurrentWeights[-1] = zDelta.multiply(self.oldLayers[i].transpose())
-            rDeltaWeights[-1] = rDelta.multiply(self.layers[i].transpose())
-            rDeltaRecurrentWeights[-1] = rDelta.multiply(self.oldLayers[i].transpose())
-
-            if i > 0:
-                deltaWeights.append(
-                    delta.transpose()
-                    .multiply(
-                        self.weights[i].partial(
-                            0, self.weights[i].getRow() - 1, 0, self.weights[i].getColumn() - 2
-                        )
-                    )
-                    .transpose()
+                rw = Tensor(
+                    self.parameters.initializeWeights(
+                        self.parameters.getHiddenLayer(i),
+                        self.parameters.getHiddenLayer(i),
+                        random_generator
+                    ),
+                    (self.parameters.getHiddenLayer(i), self.parameters.getHiddenLayer(i))
                 )
-                deltaRecurrentWeights.append(deltaWeights[-1].clone())
-                zDeltaWeights.append(
-                    zDelta.transpose()
-                    .multiply(
-                        self.zWeights[i].partial(
-                            0, self.zWeights[i].getRow() - 1, 0, self.zWeights[i].getColumn() - 2
-                        )
-                    )
-                    .transpose()
-                )
-                zDeltaRecurrentWeights.append(zDeltaWeights[-1].clone())
-                rDeltaWeights.append(
-                    rDelta.transpose()
-                    .multiply(
-                        self.rWeights[i].partial(
-                            0, self.rWeights[i].getRow() - 1, 0, self.rWeights[i].getColumn() - 2
-                        )
-                    )
-                    .transpose()
-                )
-                rDeltaRecurrentWeights.append(rDeltaWeights[-1].clone())
+                recurrent_weights.append(MultiplicationNode(rw))
 
-        self.weights[-1].append(deltaWeights[0])
-        deltaWeights.pop(0)
+            current_length = self.parameters.getHiddenLayer(i) + 1
 
-        for i in range(len(deltaWeights)):
-            self.weights[-i - 2].append(deltaWeights[i])
-            self.rWeights[-i - 1].append(rDeltaWeights[i])
-            self.zWeights[-i - 1].append(zDeltaWeights[i])
-            self.recurrentWeights[-i - 1].append(deltaRecurrentWeights[i])
-            self.zRecurrentWeights[-i - 1].append(zDeltaRecurrentWeights[i])
-            self.rRecurrentWeights[-i - 1].append(rDeltaRecurrentWeights[i])
+        # Output layer weights
+        weights.append(MultiplicationNode(
+            Tensor(
+                self.parameters.initializeWeights(
+                    current_length,
+                    self.parameters.getClassLabelSize(),
+                    random_generator
+                ),
+                (current_length, self.parameters.getClassLabelSize())
+            )
+        ))
+
+        current_old_layers = []
+        output_nodes = []
+
+        for k in range(time_step):
+            self.__switches.append(Switch())
+
+            new_old_layers = []
+
+            input_node = MultiplicationNode(False, True)
+            self.inputNodes.append(input_node)
+
+            current = input_node
+
+            for i in range(self.parameters.size()):
+                if current_old_layers:
+                    aw = self.addEdge(current, weights[i * 3])
+
+                    o_without_bias = self.addEdge(current_old_layers[i], RemoveBias())
+                    ou = self.addEdge(o_without_bias, recurrent_weights[i * 3])
+
+                    aw_ou = self.addAdditionEdge(aw, ou, False)
+
+                    zt = self.addEdge(aw_ou, self.parameters.getActivationFunction(i * 2))
+
+                    aw = self.addEdge(current, weights[i * 3 + 1])
+                    ou = self.addEdge(o_without_bias, recurrent_weights[i * 3 + 1])
+
+                    aw_ou = self.addAdditionEdge(aw, ou, False)
+                    rt = self.addEdge(aw_ou, self.parameters.getActivationFunction(i * 2 + 1))
+
+                    aw = self.addEdge(current, weights[i * 3 + 2])
+
+                    rt_ht1 = self.addEdge(rt, o_without_bias, False, True)
+                    ou = self.addEdge(rt_ht1, recurrent_weights[i * 3 + 2])
+
+                    aw_ou = self.addAdditionEdge(aw, ou, False)
+
+                    h_temp = self.addEdge(aw_ou, Tanh())
+
+                    minus_zt = self.addEdge(zt, Negation())
+                    one_minus_zt = self.addEdge(minus_zt, AdditionByConstant(1.0))
+
+                    aw = self.addEdge(one_minus_zt, o_without_bias, False, True)
+                    ou = self.addEdge(h_temp, zt, False, True)
+
+                    a_function = self.addAdditionEdge(aw, ou, True)
+
+                else:
+                    aw = self.addEdge(current, weights[i * 3])
+
+                    zt = self.addEdge(aw, self.parameters.getActivationFunction(i * 2))
+
+                    aw = self.addEdge(current, weights[i * 3 + 2])
+                    h_temp = self.addEdge(aw, Tanh())
+
+                    a_function = self.addEdge(zt, h_temp, True, True)
+
+                current = a_function
+                new_old_layers.append(a_function)
+
+            current_old_layers = new_old_layers
+
+            node = self.addEdge(current, weights[-1])
+            output_nodes.append(self.addEdge(node, self.__switches[k]))
+
+        concatenated_node = self.concatEdges(output_nodes, 0)
+        self.outputNode = self.addEdge(concatenated_node, Softmax())
+
+        class_label_node = ComputationalNode()
+        self.inputNodes.append(class_label_node)
+
+        loss_inputs = [self.outputNode, class_label_node]
+
+        self.addFunctionEdge(loss_inputs, self.parameters.getLossFunction(), False)
+
+        super().train(train_set, random_generator)
