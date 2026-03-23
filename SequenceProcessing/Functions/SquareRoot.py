@@ -1,4 +1,3 @@
-import math
 from typing import List
 
 from ComputationalGraph.Function.Function import Function
@@ -9,7 +8,7 @@ from Math.Tensor import Tensor
 
 class SquareRoot(Function):
     """
-    Computes the square root of epsilon + x for each tensor element.
+    Computes the element-wise square root of (epsilon + tensor).
     """
 
     __epsilon: float
@@ -20,13 +19,13 @@ class SquareRoot(Function):
 
         :param epsilon: Small constant added before square root.
         """
-        self.__epsilon = epsilon
+        self.__epsilon = float(epsilon)
 
     def getEpsilon(self) -> float:
         """
         Getter for epsilon.
 
-        :return: Epsilon value.
+        :return: epsilon value.
         """
         return self.__epsilon
 
@@ -36,45 +35,38 @@ class SquareRoot(Function):
 
         :param epsilon: New epsilon value.
         """
-        self.__epsilon = epsilon
+        self.__epsilon = float(epsilon)
 
     def calculate(self, tensor: Tensor) -> Tensor:
         """
-        Calculates sqrt(epsilon + x) for each element.
+        Computes sqrt(epsilon + x) element-wise.
 
         :param tensor: Input tensor.
-        :return: Output tensor.
+        :return: Result tensor.
         """
         values = []
         shape = tensor.getShape()
 
         for i in range(shape[0]):
             for j in range(shape[1]):
-                values.append(math.sqrt(self.__epsilon + tensor.getValue((i, j))))
+                val = tensor.getValue((i, j))
+                values.append((self.__epsilon + val) ** 0.5)
 
         return Tensor(values, shape)
 
-    def derivative(self, value: Tensor, backward: Tensor) -> Tensor:
+    def derivative(self, tensor: Tensor, backward: Tensor) -> Tensor:
         """
-        Computes the derivative of sqrt(epsilon + x).
-
-        If
-            f(x) = sqrt(epsilon + x)
-        then
-            f'(x) = 1 / (2 * sqrt(epsilon + x))
-
-        :param value: Current tensor value.
+        :param tensor: Input tensor.
         :param backward: Backward gradient tensor.
-        :return: Resulting gradient tensor.
+        :return: Result gradient tensor.
         """
         values = []
-        shape = value.getShape()
+        shape = tensor.getShape()
 
         for i in range(shape[0]):
             for j in range(shape[1]):
-                current_value = value.getValue((i, j))
-                derivative_value = 1.0 / (2.0 * math.sqrt(self.__epsilon + current_value))
-                values.append(derivative_value)
+                val = tensor.getValue((i, j))
+                values.append(1.0 / (2.0 * val))
 
         return backward.hadamardProduct(Tensor(values, shape))
 
@@ -84,9 +76,9 @@ class SquareRoot(Function):
         """
         Adds this function as an edge to the computational graph.
 
-        :param input_nodes: Input computational nodes.
-        :param is_biased: Indicates whether the edge is biased.
-        :return: Newly created computational node.
+        :param input_nodes: Input nodes.
+        :param is_biased: Bias flag.
+        :return: New computational node.
         """
         new_node = FunctionNode(is_biased, self)
         input_nodes[0].add(new_node)

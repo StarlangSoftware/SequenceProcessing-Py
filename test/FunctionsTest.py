@@ -17,27 +17,38 @@ class VarianceTest(unittest.TestCase):
 
     def testCalculate(self):
         """
-        Tests the forward computation of Variance.
+        Tests forward computation.
         """
         tensor = Tensor([1.0, 2.0, 3.0, 4.0], (2, 2))
-        function = Variance()
+        func = Variance()
 
-        result = function.calculate(tensor)
+        result = func.calculate(tensor)
 
-        self.assertEqual([2.5, 2.5, 12.5, 12.5], result.getData())
+        # Row-wise mean of squares:
+        # row1: (1^2 + 2^2)/2 = (1 + 4)/2 = 2.5
+        # row2: (3^2 + 4^2)/2 = (9 + 16)/2 = 12.5
+        expected = [2.5, 2.5, 12.5, 12.5]
+
+        self.assertEqual(expected, result.getData())
         self.assertEqual((2, 2), result.getShape())
 
     def testDerivative(self):
         """
-        Tests the backward computation of Variance.
+        Tests derivative.
         """
         tensor = Tensor([1.0, 2.0, 3.0, 4.0], (2, 2))
         backward = Tensor([1.0, 1.0, 1.0, 1.0], (2, 2))
-        function = Variance()
+        func = Variance()
 
-        result = function.derivative(tensor, backward)
+        result = func.derivative(tensor, backward)
 
-        self.assertEqual([1.0, 2.0, 3.0, 4.0], result.getData())
+        shape = tensor.getShape()
+        expected = []
+
+        for val in tensor.getData():
+            expected.append(2.0 * ((shape[1] * val) ** 0.5) / shape[1])
+
+        self.assertEqual(expected, result.getData())
         self.assertEqual((2, 2), result.getShape())
 
 
@@ -129,33 +140,40 @@ class SquareRootTest(unittest.TestCase):
 
     def testCalculate(self):
         """
-        Tests the forward computation of SquareRoot.
+        Tests forward computation.
         """
-        tensor = Tensor([3.0, 8.0], (1, 2))
-        function = SquareRoot(1.0)
+        tensor = Tensor([3.0, 8.0, 15.0, 24.0], (2, 2))
+        func = SquareRoot(1.0)
 
-        result = function.calculate(tensor)
+        result = func.calculate(tensor)
 
-        expected = [2.0, 3.0]
+        # sqrt(1 + x)
+        expected = [
+            (1 + 3.0) ** 0.5,
+            (1 + 8.0) ** 0.5,
+            (1 + 15.0) ** 0.5,
+            (1 + 24.0) ** 0.5
+        ]
 
         self.assertEqual(expected, result.getData())
-        self.assertEqual((1, 2), result.getShape())
+        self.assertEqual((2, 2), result.getShape())
 
     def testDerivative(self):
-        """
-        Tests the derivative computation of SquareRoot.
-        """
-        tensor = Tensor([3.0, 8.0], (1, 2))
-        backward = Tensor([1.0, 1.0], (1, 2))
-        function = SquareRoot(1.0)
+        tensor = Tensor([2.0, 4.0, 5.0, 10.0], (2, 2))
+        backward = Tensor([1.0, 1.0, 1.0, 1.0], (2, 2))
+        func = SquareRoot(1.0)
 
-        result = function.derivative(tensor, backward)
+        result = func.derivative(tensor, backward)
 
-        expected = [1.0 / 4.0, 1.0 / 6.0]
+        expected = [
+            1.0 / (2 * 2.0),
+            1.0 / (2 * 4.0),
+            1.0 / (2 * 5.0),
+            1.0 / (2 * 10.0)
+        ]
 
-        self.assertAlmostEqual(expected[0], result.getData()[0], places=7)
-        self.assertAlmostEqual(expected[1], result.getData()[1], places=7)
-        self.assertEqual((1, 2), result.getShape())
+        self.assertEqual(expected, result.getData())
+        self.assertEqual((2, 2), result.getShape())
 
 
 
@@ -236,33 +254,24 @@ class TestMultiplyByConstant(unittest.TestCase):
 class InverseTest(unittest.TestCase):
 
     def testCalculate(self):
-        """
-        Tests element-wise inverse calculation.
-        """
-        inverse = Inverse()
-        tensor = Tensor([2.0, 4.0, 0.5, 1.0], (2, 2))
+        tensor = Tensor([2.0, 4.0, 5.0, 10.0], (2, 2))
+        function = Inverse()
 
-        result = inverse.calculate(tensor)
+        result = function.calculate(tensor)
 
-        self.assertAlmostEqual(0.5, result.getValue((0, 0)))
-        self.assertAlmostEqual(0.25, result.getValue((0, 1)))
-        self.assertAlmostEqual(2.0, result.getValue((1, 0)))
-        self.assertAlmostEqual(1.0, result.getValue((1, 1)))
+        self.assertEqual([0.5, 0.25, 0.2, 0.1], result.getData())
+        self.assertEqual((2, 2), result.getShape())
 
     def testDerivative(self):
-        """
-        Tests derivative of inverse function.
-        """
-        inverse = Inverse()
-        tensor = Tensor([2.0, 4.0, 0.5, 1.0], (2, 2))
+        tensor = Tensor([2.0, 4.0, 5.0, 10.0], (2, 2))
         backward = Tensor([1.0, 1.0, 1.0, 1.0], (2, 2))
+        function = Inverse()
 
-        result = inverse.derivative(tensor, backward)
+        result = function.derivative(tensor, backward)
 
-        self.assertAlmostEqual(-0.25, result.getValue((0, 0)))
-        self.assertAlmostEqual(-0.0625, result.getValue((0, 1)))
-        self.assertAlmostEqual(-4.0, result.getValue((1, 0)))
-        self.assertAlmostEqual(-1.0, result.getValue((1, 1)))
+        self.assertEqual([-4.0, -16.0, -25.0, -100.0], result.getData())
+        self.assertEqual((2, 2), result.getShape())
+
 
 
 

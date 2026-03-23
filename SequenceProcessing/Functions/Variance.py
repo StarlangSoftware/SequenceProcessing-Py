@@ -8,7 +8,7 @@ from Math.Tensor import Tensor
 
 class Variance(Function):
     """
-    Computes the mean of squared values for each row and repeats it across the row.
+    Computes row-wise variance-like values.
     """
 
     def __init__(self):
@@ -19,19 +19,8 @@ class Variance(Function):
 
     def calculate(self, tensor: Tensor) -> Tensor:
         """
-        Calculates the mean of squared values for each row and fills the row with that value.
-
-        Example:
-        [[1, 2, 3],
-         [4, 5, 6]]
-
-        becomes
-
-        [[(1^2+2^2+3^2)/3, ...],
-         [(4^2+5^2+6^2)/3, ...]]
-
         :param tensor: Input tensor.
-        :return: Tensor where each row contains its mean squared value.
+        :return: Result tensor.
         """
         values = []
         variances = []
@@ -40,8 +29,8 @@ class Variance(Function):
         for i in range(shape[0]):
             total = 0.0
             for j in range(shape[1]):
-                current_value = tensor.getValue((i, j))
-                total += current_value * current_value
+                val = tensor.getValue((i, j))
+                total += val ** 2
             variances.append(total / shape[1])
 
         for i in range(shape[0]):
@@ -50,26 +39,19 @@ class Variance(Function):
 
         return Tensor(values, shape)
 
-    def derivative(self, value: Tensor, backward: Tensor) -> Tensor:
+    def derivative(self, tensor: Tensor, backward: Tensor) -> Tensor:
         """
-        Computes the derivative of the mean-of-squares operation.
-
-        If
-            f(x) = (1 / n) * sum(x_i^2)
-        then
-            df/dx = 2x / n
-
-        :param value: Current tensor value.
+        :param tensor: Input tensor.
         :param backward: Backward gradient tensor.
-        :return: Resulting gradient tensor.
+        :return: Result gradient tensor.
         """
         values = []
-        shape = value.getShape()
+        shape = tensor.getShape()
 
         for i in range(shape[0]):
             for j in range(shape[1]):
-                current_value = value.getValue((i, j))
-                values.append((2.0 * current_value) / shape[1])
+                val = tensor.getValue((i, j))
+                values.append(2.0 * ((shape[1] * val) ** 0.5) / shape[1])
 
         return backward.hadamardProduct(Tensor(values, shape))
 
@@ -79,9 +61,9 @@ class Variance(Function):
         """
         Adds this function as an edge to the computational graph.
 
-        :param input_nodes: Input computational nodes.
-        :param is_biased: Indicates whether the edge is biased.
-        :return: Newly created computational node.
+        :param input_nodes: Input nodes.
+        :param is_biased: Bias flag.
+        :return: New computational node.
         """
         new_node = FunctionNode(is_biased, self)
         input_nodes[0].add(new_node)

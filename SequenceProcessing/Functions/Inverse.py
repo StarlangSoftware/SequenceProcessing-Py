@@ -33,24 +33,19 @@ class Inverse(Function):
 
         return Tensor(values, shape)
 
-    def derivative(self, value: Tensor, backward: Tensor) -> Tensor:
+    def derivative(self, tensor: Tensor, backward: Tensor) -> Tensor:
         """
-        Calculates the derivative of the inverse operation.
-
-        For f(x) = 1 / x, the derivative is:
-            f'(x) = -1 / x^2
-
-        :param value: Current tensor value.
+        :param tensor: Input tensor.
         :param backward: Backward gradient tensor.
         :return: Resulting gradient tensor.
         """
         values = []
-        shape = value.getShape()
+        shape = tensor.getShape()
 
         for i in range(shape[0]):
             for j in range(shape[1]):
-                current_value = value.getValue((i, j))
-                values.append(-1.0 / (current_value * current_value))
+                current_value = tensor.getValue((i, j))
+                values.append(-(current_value ** 2))
 
         return backward.hadamardProduct(Tensor(values, shape))
 
