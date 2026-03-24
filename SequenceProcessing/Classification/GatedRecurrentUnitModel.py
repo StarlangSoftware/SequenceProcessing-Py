@@ -96,7 +96,7 @@ class GatedRecurrentUnitModel(RecurrentNeuralNetworkModel):
             new_old_layers = []
 
             input_node = MultiplicationNode(False, True)
-            self.inputNodes.append(input_node)
+            self.input_nodes.append(input_node)
 
             current = input_node
 
@@ -153,12 +153,12 @@ class GatedRecurrentUnitModel(RecurrentNeuralNetworkModel):
             output_nodes.append(self.addEdge(node, self.__switches[k]))
 
         concatenated_node = self.concatEdges(output_nodes, 0)
-        self.outputNode = self.addEdge(concatenated_node, Softmax())
+        self.output_node = self.addEdge(concatenated_node, Softmax())
 
         class_label_node = ComputationalNode()
-        self.inputNodes.append(class_label_node)
+        self.input_nodes.append(class_label_node)
 
-        loss_inputs = [self.outputNode, class_label_node]
+        loss_inputs = [self.output_node, class_label_node]
 
         self.addFunctionEdge(loss_inputs, self.parameters.getLossFunction(), False)
 
