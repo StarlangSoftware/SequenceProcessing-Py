@@ -5,9 +5,10 @@ this_directory = Path(__file__).parent
 long_description = (this_directory / "README.md").read_text(encoding="utf-8")
 
 setup(
-    name="NlpToolkit-SequenceProcessing",
-    version="1.0.0",
-    packages=find_packages(),  
+    name="nlptoolkit_sequenceprocessing",
+    version="1.0.1",
+    packages=['SequenceProcessing', 'SequenceProcessing.Classification', 'SequenceProcessing.Functions',
+              'SequenceProcessing.Parameters', 'SequenceProcessing.Sequence'],
     url="https://github.com/StarlangSoftware/SequenceProcessing-Py",
     author="olcaytaner",
     author_email="olcay.yildiz@ozyegin.edu.tr",
