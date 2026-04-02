@@ -11,7 +11,7 @@ class MultiplyByConstant(Function):
     Multiplies every element of a tensor with a constant value.
     """
 
-    constant: float
+    __constant: float
 
     def __init__(self, constant: float):
         """
@@ -19,7 +19,7 @@ class MultiplyByConstant(Function):
 
         :param constant: The constant value to multiply with tensor elements.
         """
-        self.constant = float(constant)
+        self.__constant = float(constant)
 
     def calculate(self, tensor: Tensor) -> Tensor:
         """
@@ -34,7 +34,7 @@ class MultiplyByConstant(Function):
         tensor_values = tensor.getData()
 
         for val in tensor_values:
-            values.append(self.constant * val)
+            values.append(self.__constant * val)
 
         return Tensor(values, tensor.getShape())
 
@@ -58,7 +58,7 @@ class MultiplyByConstant(Function):
 
         for i in range(shape[0]):
             for j in range(shape[1]):
-                values.append(self.constant)
+                values.append(self.__constant)
 
         constant_tensor = Tensor(values, shape)
 
