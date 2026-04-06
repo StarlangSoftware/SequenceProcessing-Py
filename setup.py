@@ -6,7 +6,7 @@ long_description = (this_directory / "README.md").read_text(encoding="utf-8")
 
 setup(
     name="nlptoolkit_sequenceprocessing",
-    version="1.0.1",
+    version="1.0.2",
     packages=['SequenceProcessing', 'SequenceProcessing.Classification', 'SequenceProcessing.Functions',
               'SequenceProcessing.Parameters', 'SequenceProcessing.Sequence'],
     url="https://github.com/StarlangSoftware/SequenceProcessing-Py",
