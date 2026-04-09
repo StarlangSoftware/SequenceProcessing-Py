@@ -28,5 +28,5 @@ Thumbs.db
 =
 pyenv.cfg
 
-
+__pycache__/
 *.pyc
